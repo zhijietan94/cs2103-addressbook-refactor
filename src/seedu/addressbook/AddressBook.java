@@ -783,19 +783,6 @@ public class AddressBook {
     }
 
     /**
-     * Create a person for use in the internal data.
-     *
-     * @param name of person
-     * @param phone without data prefix
-     * @param email without data prefix
-     * @return constructed person
-     */
-    private static Person makePersonFromData(String name, String phone, String email) {
-        final Person person = new Person(name, phone, email);
-        return person;
-    }
-
-    /**
      * Encodes a person into a decodable and readable string representation.
      *
      * @param person to be encoded
@@ -838,11 +825,11 @@ public class AddressBook {
         if (!isPersonDataExtractableFrom(encoded)) {
             return Optional.empty();
         }
-        final Person decodedPerson = makePersonFromData(
-                extractNameFromPersonString(encoded),
-                extractPhoneFromPersonString(encoded),
-                extractEmailFromPersonString(encoded)
-        );
+        final Person decodedPerson = new Person(
+        		extractNameFromPersonString(encoded),
+        		extractPhoneFromPersonString(encoded),
+        		extractEmailFromPersonString(encoded));
+        
         // check that the constructed person is valid
         return isPersonDataValid(decodedPerson) ? Optional.of(decodedPerson) : Optional.empty();
     }
