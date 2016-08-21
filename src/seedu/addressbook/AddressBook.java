@@ -132,7 +132,7 @@ public class AddressBook {
     private static final String DIVIDER = "===================================================";
 
     /**
-     * Offset required to convert between 1-indexing and 0-indexing.COMMAND_
+     * Offset required to convert between 1-indexing and 0-indexing.
      */
     private static final int DISPLAYED_INDEX_OFFSET = 1;
 
@@ -168,7 +168,7 @@ public class AddressBook {
      * This is a subset of the full list. Deleting persons in the pull list does not delete
      * those persons from this list.
      */
-    private static ArrayList<Person> latestPersonListingView = getAllPersonsInAddressBook(); // initial view is of all
+    private static ArrayList<Person> latestPersonsListingView = getAllPersonsInAddressBook(); // initial view is of all
 
     /**
      * The path to the file used for storing person data.
@@ -185,7 +185,7 @@ public class AddressBook {
     public static void main(String[] args) {
         showWelcomeMessage();
         processProgramArgs(args);
-        loadDataFromStorage();
+        loadPersonsFromStorage();
         while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
@@ -301,7 +301,7 @@ public class AddressBook {
      * Initialises the in-memory data using the storage file.
      * Assumption: The file exists.
      */
-    private static void loadDataFromStorage() {
+    private static void loadPersonsFromStorage() {
         initialiseAddressBookModel(loadPersonsFromFile(storageFilePath));
     }
 
@@ -323,22 +323,22 @@ public class AddressBook {
         final String commandType = commandTypeAndParams[0];
         final String commandArgs = commandTypeAndParams[1];
         switch (commandType) {
-        case COMMAND_ADD_WORD:
-            return executeAddPerson(commandArgs);
-        case COMMAND_FIND_WORD:
-            return executeFindPersons(commandArgs);
-        case COMMAND_LIST_WORD:
-            return executeListAllPersonsInAddressBook();
-        case COMMAND_DELETE_WORD:
-            return executeDeletePerson(commandArgs);
-        case COMMAND_CLEAR_WORD:
-            return executeClearAddressBook();
-        case COMMAND_HELP_WORD:
-            return getUsageInfoForAllCommands();
-        case COMMAND_EXIT_WORD:
-            executeExitProgramRequest();
-        default:
-            return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
+	        case COMMAND_ADD_WORD:
+	            return executeAddPerson(commandArgs);
+	        case COMMAND_FIND_WORD:
+	            return executeFindPersons(commandArgs);
+	        case COMMAND_LIST_WORD:
+	            return executeListAllPersonsInAddressBook();
+	        case COMMAND_DELETE_WORD:
+	            return executeDeletePerson(commandArgs);
+	        case COMMAND_CLEAR_WORD:
+	            return executeClearAddressBook();
+	        case COMMAND_HELP_WORD:
+	            return getUsageInfoForAllCommands();
+	        case COMMAND_EXIT_WORD:
+	            executeExitProgramRequest();
+	        default:
+	            return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
     }
 
@@ -349,7 +349,7 @@ public class AddressBook {
      */
     private static String[] splitCommandWordAndArgs(String rawUserInput) {
         final String[] split =  rawUserInput.trim().split("\\s+", 2);
-        return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
+        return (split.length == 2) ? split : new String[] { split[0] , "" }; // else case: no parameters
     }
 
     /**
@@ -374,7 +374,8 @@ public class AddressBook {
         final Optional<Person> decodeResult = decodePersonFromString(commandArgs);
 
         // checks if args are valid (decode result will not be present if the person is invalid)
-        if (!decodeResult.isPresent()) {
+        boolean isValid = decodeResult.isPresent();
+		if (!isValid) {
             return getMessageForInvalidCommandInput(COMMAND_ADD_WORD, getUsageInfoForAddCommand());
         }
 
@@ -498,7 +499,7 @@ public class AddressBook {
      * @return whether it is valid
      */
     private static boolean isDisplayIndexValidForLastPersonListingView(int index) {
-        return index >= DISPLAYED_INDEX_OFFSET && index < getLatestPersonListingView().size() + DISPLAYED_INDEX_OFFSET;
+        return index >= DISPLAYED_INDEX_OFFSET && index < getlatestPersonsListingView().size() + DISPLAYED_INDEX_OFFSET;
     }
 
     /**
@@ -633,7 +634,7 @@ public class AddressBook {
      */
     private static void updateLatestViewedPersonListing(ArrayList<Person> newListing) {
         // clone to insulate from future changes to arg list
-        latestPersonListingView = new ArrayList<>(newListing);
+        latestPersonsListingView = new ArrayList<>(newListing);
     }
 
     /**
@@ -643,14 +644,14 @@ public class AddressBook {
      * @return the actual person object in the last shown person listing
      */
     private static Person getPersonByLastVisibleIndex(int lastVisibleIndex) {
-       return latestPersonListingView.get(lastVisibleIndex - DISPLAYED_INDEX_OFFSET);
+       return latestPersonsListingView.get(lastVisibleIndex - DISPLAYED_INDEX_OFFSET);
     }
 
     /**
      * @return unmodifiable list view of the last person listing view
      */
-    private static ArrayList<Person> getLatestPersonListingView() {
-        return latestPersonListingView;
+    private static ArrayList<Person> getlatestPersonsListingView() {
+        return latestPersonsListingView;
     }
 
 
